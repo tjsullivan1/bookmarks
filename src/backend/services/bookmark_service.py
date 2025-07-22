@@ -8,9 +8,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Global mock storage for development mode
+_mock_storage = []
+
 class BookmarkService:
     def __init__(self, container):
         self.container = container
+        # Use global mock storage for development mode so it persists across service instances
+        self._mock_storage = _mock_storage if not container else None
     
     async def create_bookmark(self, bookmark_data: BookmarkCreate) -> Bookmark:
         """Create a new bookmark"""
@@ -31,10 +36,15 @@ class BookmarkService:
                 "updated_at": datetime.utcnow().isoformat()
             }
             
-            # Insert into Cosmos DB
-            created_item = self.container.create_item(body=bookmark_doc)
-            
-            return Bookmark(**created_item)
+            if self.container:
+                # Insert into Cosmos DB
+                created_item = self.container.create_item(body=bookmark_doc)
+                return Bookmark(**created_item)
+            else:
+                # Mock storage for development
+                self._mock_storage.append(bookmark_doc)
+                logger.info(f"Created bookmark in mock storage: {bookmark_doc['title']}")
+                return Bookmark(**bookmark_doc)
             
         except exceptions.CosmosHttpResponseError as e:
             logger.error(f"Error creating bookmark: {e.message}")
@@ -46,11 +56,18 @@ class BookmarkService:
     async def get_bookmark(self, bookmark_id: str, user_id: str = "default_user") -> Optional[Bookmark]:
         """Get a specific bookmark by ID"""
         try:
-            item = self.container.read_item(
-                item=bookmark_id,
-                partition_key=user_id
-            )
-            return Bookmark(**item)
+            if self.container:
+                item = self.container.read_item(
+                    item=bookmark_id,
+                    partition_key=user_id
+                )
+                return Bookmark(**item)
+            else:
+                # Mock storage for development
+                for item in self._mock_storage:
+                    if item['id'] == bookmark_id and item['user_id'] == user_id:
+                        return Bookmark(**item)
+                return None
         except exceptions.CosmosResourceNotFoundError:
             return None
         except Exception as e:
@@ -67,32 +84,52 @@ class BookmarkService:
     ) -> tuple[List[Bookmark], int]:
         """Get all bookmarks for a user with optional filtering"""
         try:
-            # Build query
-            query = "SELECT * FROM c WHERE c.user_id = @user_id"
-            parameters = [{"name": "@user_id", "value": user_id}]
-            
-            if category:
-                query += " AND c.category = @category"
-                parameters.append({"name": "@category", "value": category})
-            
-            if tags:
-                tag_conditions = []
-                for i, tag in enumerate(tags):
-                    tag_param = f"@tag{i}"
-                    tag_conditions.append(f"ARRAY_CONTAINS(c.tags, {tag_param})")
-                    parameters.append({"name": tag_param, "value": tag})
+            if self.container:
+                # Build query
+                query = "SELECT * FROM c WHERE c.user_id = @user_id"
+                parameters = [{"name": "@user_id", "value": user_id}]
                 
-                if tag_conditions:
-                    query += f" AND ({' OR '.join(tag_conditions)})"
-            
-            query += " ORDER BY c.created_at DESC"
-            
-            # Execute query
-            items = list(self.container.query_items(
-                query=query,
-                parameters=parameters,
-                enable_cross_partition_query=True
-            ))
+                if category:
+                    query += " AND c.category = @category"
+                    parameters.append({"name": "@category", "value": category})
+                
+                if tags:
+                    tag_conditions = []
+                    for i, tag in enumerate(tags):
+                        tag_param = f"@tag{i}"
+                        tag_conditions.append(f"ARRAY_CONTAINS(c.tags, {tag_param})")
+                        parameters.append({"name": tag_param, "value": tag})
+                    
+                    if tag_conditions:
+                        query += f" AND ({' OR '.join(tag_conditions)})"
+                
+                query += " ORDER BY c.created_at DESC"
+                
+                # Execute query
+                items = list(self.container.query_items(
+                    query=query,
+                    parameters=parameters,
+                    enable_cross_partition_query=True
+                ))
+            else:
+                # Mock storage for development
+                items = []
+                for item in self._mock_storage:
+                    if item['user_id'] != user_id:
+                        continue
+                    
+                    if category and item['category'] != category:
+                        continue
+                        
+                    if tags:
+                        item_tags = item.get('tags', [])
+                        if not any(tag in item_tags for tag in tags):
+                            continue
+                    
+                    items.append(item)
+                
+                # Sort by created_at descending
+                items.sort(key=lambda x: x['created_at'], reverse=True)
             
             total_count = len(items)
             
@@ -137,13 +174,21 @@ class BookmarkService:
             update_data.update(update_dict)
             update_data['updated_at'] = datetime.utcnow().isoformat()
             
-            # Update in Cosmos DB
-            updated_item = self.container.replace_item(
-                item=bookmark_id,
-                body=update_data
-            )
-            
-            return Bookmark(**updated_item)
+            if self.container:
+                # Update in Cosmos DB
+                updated_item = self.container.replace_item(
+                    item=bookmark_id,
+                    body=update_data
+                )
+                return Bookmark(**updated_item)
+            else:
+                # Mock storage for development
+                for i, item in enumerate(self._mock_storage):
+                    if item['id'] == bookmark_id and item['user_id'] == user_id:
+                        self._mock_storage[i] = update_data
+                        logger.info(f"Updated bookmark in mock storage: {update_data['title']}")
+                        return Bookmark(**update_data)
+                return None
             
         except exceptions.CosmosResourceNotFoundError:
             return None
@@ -154,11 +199,20 @@ class BookmarkService:
     async def delete_bookmark(self, bookmark_id: str, user_id: str = "default_user") -> bool:
         """Delete a bookmark"""
         try:
-            self.container.delete_item(
-                item=bookmark_id,
-                partition_key=user_id
-            )
-            return True
+            if self.container:
+                self.container.delete_item(
+                    item=bookmark_id,
+                    partition_key=user_id
+                )
+                return True
+            else:
+                # Mock storage for development
+                for i, item in enumerate(self._mock_storage):
+                    if item['id'] == bookmark_id and item['user_id'] == user_id:
+                        deleted_item = self._mock_storage.pop(i)
+                        logger.info(f"Deleted bookmark from mock storage: {deleted_item['title']}")
+                        return True
+                return False
         except exceptions.CosmosResourceNotFoundError:
             return False
         except Exception as e:
@@ -168,16 +222,24 @@ class BookmarkService:
     async def get_categories(self, user_id: str = "default_user") -> List[str]:
         """Get all categories used by the user"""
         try:
-            query = "SELECT DISTINCT c.category FROM c WHERE c.user_id = @user_id"
-            parameters = [{"name": "@user_id", "value": user_id}]
-            
-            items = list(self.container.query_items(
-                query=query,
-                parameters=parameters,
-                enable_cross_partition_query=True
-            ))
-            
-            categories = [item['category'] for item in items]
+            if self.container:
+                query = "SELECT DISTINCT c.category FROM c WHERE c.user_id = @user_id"
+                parameters = [{"name": "@user_id", "value": user_id}]
+                
+                items = list(self.container.query_items(
+                    query=query,
+                    parameters=parameters,
+                    enable_cross_partition_query=True
+                ))
+                
+                categories = [item['category'] for item in items]
+            else:
+                # Mock storage for development
+                categories = []
+                for item in self._mock_storage:
+                    if item['user_id'] == user_id:
+                        categories.append(item['category'])
+                categories = list(set(categories))  # Remove duplicates
             
             # Include all available categories from enum
             all_categories = [category.value for category in BookmarkCategory]

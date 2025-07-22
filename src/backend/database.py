@@ -56,4 +56,5 @@ async def get_database():
     """Dependency to get database client"""
     if not cosmos_client.container:
         await cosmos_client.initialize()
-    return cosmos_client.get_container()
+    # Return None if no container is available (development mode)
+    return cosmos_client.container
