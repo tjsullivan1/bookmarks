@@ -8,7 +8,7 @@ This repository now contains a complete FastAPI backend application for managing
 
 ### Core Features
 - ✅ **Add bookmarks** - `POST /api/v1/bookmarks/` endpoint
-- ✅ **Remove bookmarks** - `DELETE /api/v1/bookmarks/{bookmark_id}` endpoint  
+- ✅ **Remove bookmarks** - `DELETE /api/v1/bookmarks/{bookmark_id}` endpoint
 - ✅ **List bookmarks** - `GET /api/v1/bookmarks/` with filtering and pagination
 - ✅ **Update bookmarks** - `PUT /api/v1/bookmarks/{bookmark_id}` endpoint
 - ✅ **Categorize bookmarks** - Category enum and tags support
@@ -27,7 +27,7 @@ This repository now contains a complete FastAPI backend application for managing
 ```
 src/backend/
 ├── main.py                 # FastAPI app with lifecycle management
-├── config.py              # Settings and environment configuration  
+├── config.py              # Settings and environment configuration
 ├── database.py            # Azure Cosmos DB client and connection
 ├── models/
 │   └── bookmark.py        # Pydantic models and schemas
@@ -53,7 +53,7 @@ src/backend/
 {
   "id": "uuid",
   "title": "string (1-200 chars)",
-  "url": "valid URL", 
+  "url": "valid URL",
   "description": "optional string (max 500 chars)",
   "category": "work|personal|education|entertainment|news|shopping|social|technology|other",
   "tags": ["array", "of", "strings"],
@@ -86,6 +86,47 @@ src/backend/
    - API: http://localhost:8000/api/v1
    - Documentation: http://localhost:8000/docs
    - Health Check: http://localhost:8000/health
+
+### Docker Deployment
+
+For containerized deployment, use Docker:
+
+1. **Build and run with Docker Compose:**
+   ```bash
+   # Copy environment file and configure
+   cp .env.example .env
+   # Edit .env with your Azure Cosmos DB credentials
+
+   # Build and start the container
+   docker-compose up --build
+   ```
+
+2. **Or build and run manually:**
+   ```bash
+   # Build the Docker image
+   docker build -t bookmarks-backend .
+
+   # Run the container
+   docker run -p 8000:8000 \
+     -e COSMOS_ENDPOINT="your_endpoint" \
+     -e COSMOS_KEY="your_key" \
+     bookmarks-backend
+   ```
+
+3. **Production deployment:**
+   ```bash
+   # Build production image
+   docker build -t bookmarks-backend:prod .
+
+   # Run with production settings
+   docker run -d -p 8000:8000 \
+     --name bookmarks-api \
+     -e DEBUG=false \
+     -e COSMOS_ENDPOINT="your_endpoint" \
+     -e COSMOS_KEY="your_key" \
+     --restart unless-stopped \
+     bookmarks-backend:prod
+   ```
 
 ### Testing
 ```bash

@@ -1,9 +1,9 @@
 from .bookmark import (
     Bookmark,
+    BookmarkCategory,
     BookmarkCreate,
-    BookmarkUpdate,
     BookmarkResponse,
     BookmarksListResponse,
+    BookmarkUpdate,
     CategoriesResponse,
-    BookmarkCategory
 )

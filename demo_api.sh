@@ -13,7 +13,7 @@ curl -s "${BASE_URL}/health" | python -m json.tool
 echo -e "\n"
 
 echo "2. Getting welcome message..."
-curl -s "${BASE_URL}/" | python -m json.tool  
+curl -s "${BASE_URL}/" | python -m json.tool
 echo -e "\n"
 
 echo "3. Testing bookmark validation (should fail with invalid URL)..."

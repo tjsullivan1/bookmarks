@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  bookmarks-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=true
+      - COSMOS_ENDPOINT=${COSMOS_ENDPOINT:-}
+      - COSMOS_KEY=${COSMOS_KEY:-}
+      - COSMOS_DATABASE_NAME=${COSMOS_DATABASE_NAME:-bookmarks_db}
+      - COSMOS_CONTAINER_NAME=${COSMOS_CONTAINER_NAME:-bookmarks}
+    volumes:
+      # Mount logs directory for development
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped

@@ -31,10 +31,10 @@ repos:
     hooks:
     - id: bandit
       args: ["-c", "bandit.yaml"]
--   repo: https://github.com/hadialqattan/pycln
-    rev: v2.4.0
-    hooks:
-    - id: pycln
+# -   repo: https://github.com/hadialqattan/pycln
+#     rev: v2.4.0
+#     hooks:
+#     - id: pycln
 -   repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.88.2
     hooks:
