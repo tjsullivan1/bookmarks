@@ -13,7 +13,7 @@ This project is a web application that allows a user to manage their personal bo
 - `tests/`
   - Contains unit and integration tests for both frontend and backend.
 - `docs/`
-  - Contains project documentation, including API specifications and user guides.  
+  - Contains project documentation, including API specifications and user guides.
 
 ## Libraries and Frameworks
 

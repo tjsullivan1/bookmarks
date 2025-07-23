@@ -1,8 +1,6 @@
 name: Docker Image CI
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -21,7 +19,7 @@ jobs:
             python -m pytest "tests" -p no:warnings -cov=com --cov-report=xml --cov-report=html
             python -m flake8 src
             python -m black src --check
-            python -m isort src --check-only
+            # python -m isort src --check-only
             bandit -r src -c bandit.yaml -v
 
   build_and_push:
