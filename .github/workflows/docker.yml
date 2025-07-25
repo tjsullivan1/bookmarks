@@ -44,6 +44,14 @@ jobs:
       uses: docker/metadata-action@v5.5.1
       with:
         images: tjsullivan1/bookmarks-backend
+        tags: |
+          type=schedule
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=sha
 
     - name: Build and push Docker image
       id: push
@@ -77,6 +85,14 @@ jobs:
       uses: docker/metadata-action@v5.5.1
       with:
         images: tjsullivan1/bookmarks-frontend
+        tags: |
+          type=schedule
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=sha
 
     - name: Build and push Docker image
       id: push
