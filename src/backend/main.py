@@ -1,4 +1,3 @@
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 import logging
 from contextlib import asynccontextmanager
 
@@ -50,10 +49,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
-
-# Add HTTPS redirect middleware for Azure Web Apps
-if not settings.debug:  # Only in production
-    app.add_middleware(HTTPSRedirectMiddleware)
 
 # Include routers
 app.include_router(bookmarks_router, prefix="/api/v1")
