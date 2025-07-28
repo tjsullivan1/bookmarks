@@ -20,9 +20,6 @@ export const api = {
       if (pageSize) params.append('page_size', pageSize);
       
       const fullUrl = `${API_BASE}/bookmarks?${params.toString()}`;
-      console.log('🚀 Making API request to:', fullUrl);
-      console.log('🔒 URL protocol:', new URL(fullUrl).protocol);
-      console.log('🌐 Current page protocol:', window.location.protocol);
       
       const res = await fetch(fullUrl, {
         method: 'GET',
