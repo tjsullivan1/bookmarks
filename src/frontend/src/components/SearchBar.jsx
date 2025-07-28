@@ -47,7 +47,7 @@ const SearchBar = ({ onSearch, placeholder = "Search bookmarks...", className = 
           </button>
         )}
       </div>
-      
+
       {/* Keyboard shortcut hint */}
       {!searchTerm && (
         <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center space-x-1 text-xs text-gray-400 dark:text-gray-500">

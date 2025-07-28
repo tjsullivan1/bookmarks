@@ -35,13 +35,13 @@ function AppContent() {
       <Routes>
         {/* Default route - show bookmarks manager as main page */}
         <Route path="/" element={<Navigate to="/bookmarks" replace />} />
-        
+
         {/* Dashboard route */}
         <Route
           path="/dashboard"
           element={<Dashboard />}
         />
-        
+
         {/* Bookmarks management route */}
         <Route
           path="/bookmarks"
@@ -52,7 +52,7 @@ function AppContent() {
             />
           }
         />
-        
+
         {/* Catch all route - redirect to bookmarks */}
         <Route path="*" element={<Navigate to="/bookmarks" replace />} />
       </Routes>

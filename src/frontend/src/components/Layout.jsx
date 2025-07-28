@@ -18,7 +18,7 @@ const Layout = ({ children, onSearch, onNewBookmark, searchValue = '' }) => {
         e.preventDefault();
         setIsSearchFocused(true);
       }
-      
+
       // Cmd/Ctrl + N for new bookmark
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === KEYBOARD_SHORTCUTS.NEW_BOOKMARK) {
         e.preventDefault();
@@ -38,8 +38,8 @@ const Layout = ({ children, onSearch, onNewBookmark, searchValue = '' }) => {
           <div className="flex h-16 items-center justify-between">
             {/* Logo and Title */}
             <div className="flex items-center space-x-4">
-              <div 
-                className="flex items-center space-x-3 cursor-pointer" 
+              <div
+                className="flex items-center space-x-3 cursor-pointer"
                 onClick={() => navigate('/bookmarks')}
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-600 text-white">
@@ -158,7 +158,7 @@ const Layout = ({ children, onSearch, onNewBookmark, searchValue = '' }) => {
 
       {/* Search Modal for mobile - Could be expanded later */}
       {isSearchFocused && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black bg-opacity-50 md:hidden"
           onClick={() => setIsSearchFocused(false)}
         >

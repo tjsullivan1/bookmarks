@@ -110,8 +110,8 @@ const Dashboard = ({ onEditBookmark, onDeleteBookmark }) => {
                 Top Category
               </p>
               <p className="text-lg font-bold text-gray-900 dark:text-white">
-                {topCategories.length > 0 
-                  ? CATEGORY_LABELS[topCategories[0][0]] 
+                {topCategories.length > 0
+                  ? CATEGORY_LABELS[topCategories[0][0]]
                   : 'None'
                 }
               </p>
@@ -230,21 +230,21 @@ const Dashboard = ({ onEditBookmark, onDeleteBookmark }) => {
               Add Bookmark
             </span>
           </button>
-          
+
           <button className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors">
             <Search className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Search All
             </span>
           </button>
-          
+
           <button className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors">
             <Folder className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Browse Categories
             </span>
           </button>
-          
+
           <button className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors">
             <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
