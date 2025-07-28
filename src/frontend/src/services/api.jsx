@@ -19,8 +19,23 @@ export const api = {
       if (tags && tags.length > 0) params.append('tags', tags.join(','));
       if (page) params.append('page', page);
       if (pageSize) params.append('page_size', pageSize);
-      // No direct search param in backend, so filter client-side after fetch if needed
-      const res = await fetch(`${API_BASE}/bookmarks?${params.toString()}`);
+      
+      const fullUrl = `${API_BASE}/bookmarks?${params.toString()}`;
+      console.log('🚀 Making API request to:', fullUrl);
+      console.log('🔒 URL protocol:', new URL(fullUrl).protocol);
+      console.log('🌐 Current page protocol:', window.location.protocol);
+      
+      const res = await fetch(fullUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      console.log('📡 Response status:', res.status);
+      console.log('📡 Response URL:', res.url);
+      console.log('📡 Response redirected:', res.redirected);
       if (!res.ok) throw new Error('Failed to fetch bookmarks');
       const data = await res.json();
       let bookmarks = data.bookmarks;
