@@ -20,7 +20,9 @@ class Settings(BaseSettings):
     debug: bool = os.getenv("DEBUG", "false").lower() == "true"
 
     # CORS settings
-    allowed_origins: list = ["*"]  # Allow all origins for development
+    allowed_origins: list = (
+        os.getenv("ALLOWED_ORIGINS", "*").split(",") if debug else os.getenv("ALLOWED_ORIGINS", "").split(",")
+    )
 
     class Config:
         env_file = ".env"
