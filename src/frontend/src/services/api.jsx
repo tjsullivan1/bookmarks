@@ -46,7 +46,7 @@ export const api = {
       }
       return {
         bookmarks,
-        total: bookmarks.length,
+        total: data.total,
         page: data.page,
         pageSize: data.page_size,
         totalPages: Math.ceil(data.total / data.page_size),
