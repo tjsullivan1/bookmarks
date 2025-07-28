@@ -86,4 +86,6 @@ if __name__ == "__main__":
         port=8000,  # nosec
         reload=settings.debug,
         log_level="info" if settings.debug else "warning",
+        forwarded_allow_ips="*",  # Trust forwarded headers from Azure load balancer
+        proxy_headers=True,  # Enable proxy header support
     )
