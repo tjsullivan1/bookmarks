@@ -66,7 +66,7 @@ const BookmarkForm = ({ bookmark, onSave, onCancel, isOpen }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsSubmitting(true);

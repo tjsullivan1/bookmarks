@@ -21,7 +21,9 @@ class Settings(BaseSettings):
 
     # CORS settings
     allowed_origins: list = (
-        os.getenv("ALLOWED_ORIGINS", "*").split(",") if debug else os.getenv("ALLOWED_ORIGINS", "").split(",")
+        os.getenv("ALLOWED_ORIGINS", "*").split(",")
+        if debug
+        else os.getenv("ALLOWED_ORIGINS", "").split(",")
     )
 
     class Config:

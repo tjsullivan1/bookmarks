@@ -1,7 +1,7 @@
 import { BOOKMARK_CATEGORIES } from '../utils/constants.jsx';
 
 // Use environment variable for deployed backend, fallback to proxy for local dev
-const API_BASE = import.meta.env.VITE_BACKEND_URL 
+const API_BASE = import.meta.env.VITE_BACKEND_URL
   ? `${import.meta.env.VITE_BACKEND_URL}/api/v1`
   : '/api/v1';
 
@@ -18,9 +18,9 @@ export const api = {
       if (tags && tags.length > 0) params.append('tags', tags.join(','));
       if (page) params.append('page', page);
       if (pageSize) params.append('page_size', pageSize);
-      
+
       const fullUrl = `${API_BASE}/bookmarks?${params.toString()}`;
-      
+
       const res = await fetch(fullUrl, {
         method: 'GET',
         headers: {
@@ -28,7 +28,7 @@ export const api = {
           'Content-Type': 'application/json',
         },
       });
-      
+
       console.log('📡 Response status:', res.status);
       console.log('📡 Response URL:', res.url);
       console.log('📡 Response redirected:', res.redirected);

@@ -19,13 +19,13 @@ export const useTheme = () => {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    
+
     // Remove previous theme classes
     root.classList.remove('light', 'dark');
-    
+
     // Add current theme class
     root.classList.add(theme);
-    
+
     // Store in localStorage
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
@@ -33,7 +33,7 @@ export const useTheme = () => {
   useEffect(() => {
     // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const handleChange = (e) => {
       // Only change if no theme is stored (user hasn't made a choice)
       const stored = localStorage.getItem(THEME_STORAGE_KEY);
@@ -43,7 +43,7 @@ export const useTheme = () => {
     };
 
     mediaQuery.addListener(handleChange);
-    
+
     return () => mediaQuery.removeListener(handleChange);
   }, []);
 

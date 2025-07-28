@@ -27,7 +27,7 @@ const BookmarkManager = ({ searchTerm = '', onNewBookmark }) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const params = {
         category: selectedCategory !== 'all' ? selectedCategory : undefined,
         search: searchTerm,
@@ -72,7 +72,7 @@ const BookmarkManager = ({ searchTerm = '', onNewBookmark }) => {
       } else {
         await api.bookmarks.create(bookmarkData);
       }
-      
+
       setShowForm(false);
       setEditingBookmark(null);
       loadBookmarks();
