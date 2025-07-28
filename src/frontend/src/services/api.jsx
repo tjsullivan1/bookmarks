@@ -6,8 +6,7 @@ const API_BASE = import.meta.env.VITE_BACKEND_URL
   : '/api/v1';
 
 // Debug logging
-console.log('Environment VITE_BACKEND_URL:', import.meta.env.VITE_BACKEND_URL);
-console.log('API_BASE:', API_BASE);
+// Removed debug logging for environment variables and API base URL
 
 export const api = {
   bookmarks: {
