@@ -50,6 +50,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add HTTPS redirect middleware for Azure Web Apps
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+if not settings.debug:  # Only in production
+    app.add_middleware(HTTPSRedirectMiddleware)
+
 # Include routers
 app.include_router(bookmarks_router, prefix="/api/v1")
 
