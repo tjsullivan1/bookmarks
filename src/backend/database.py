@@ -9,7 +9,7 @@ from azure.core.exceptions import (
     ServiceRequestError,
     ResourceNotFoundError,
     AzureError
-)
+from azure.core.exceptions import ClientAuthenticationError, AzureError
 
 from backend.config import settings
 
