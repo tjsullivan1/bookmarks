@@ -5,9 +5,6 @@ const API_BASE = import.meta.env.VITE_BACKEND_URL
   ? `${import.meta.env.VITE_BACKEND_URL}/api/v1`
   : '/api/v1';
 
-// Debug logging
-// Removed debug logging for environment variables and API base URL
-
 export const api = {
   bookmarks: {
     // Get all bookmarks with optional filtering and pagination
@@ -34,22 +31,32 @@ export const api = {
       console.log('📡 Response redirected:', res.redirected);
       if (!res.ok) throw new Error('Failed to fetch bookmarks');
       const data = await res.json();
-      let bookmarks = data.bookmarks;
+      let allBookmarks = data.bookmarks;
+      
+      // Apply search filtering BEFORE pagination
       if (search) {
         const searchLower = search.toLowerCase();
-        bookmarks = bookmarks.filter(bookmark =>
+        allBookmarks = allBookmarks.filter(bookmark =>
           bookmark.title.toLowerCase().includes(searchLower) ||
           (bookmark.description?.toLowerCase().includes(searchLower)) ||
           bookmark.url.toLowerCase().includes(searchLower) ||
           (bookmark.tags && bookmark.tags.some(tag => tag.toLowerCase().includes(searchLower)))
         );
       }
+
+      // Calculate pagination based on filtered results
+      const filteredTotal = allBookmarks.length;
+      const totalPages = Math.ceil(filteredTotal / pageSize);
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedBookmarks = allBookmarks.slice(startIndex, endIndex);
+
       return {
-        bookmarks,
-        total: data.total,
-        page: data.page,
-        pageSize: data.page_size,
-        totalPages: Math.ceil(data.total / data.page_size),
+        bookmarks: paginatedBookmarks,
+        total: filteredTotal,
+        page: page,
+        pageSize: pageSize,
+        totalPages: totalPages,
       };
     },
 
