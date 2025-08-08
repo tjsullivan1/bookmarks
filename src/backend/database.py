@@ -30,7 +30,8 @@ class CosmosDBClient:
                 self.client = CosmosClient(settings.cosmos_endpoint, credential)
 
                 # Test the connection by attempting to list databases
-                list(self.client.list_databases())
+                # Test the connection by attempting to get database account info (lightweight connectivity check)
+                self.client.get_database_account()
                 logger.info("Successfully connected using managed identity")
 
             except Exception as managed_identity_error:
