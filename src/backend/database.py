@@ -1,6 +1,7 @@
 import logging
 
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
+from azure.identity import DefaultAzureCredential
 
 from backend.config import settings
 
@@ -16,13 +17,37 @@ class CosmosDBClient:
     async def initialize(self):
         """Initialize the Cosmos DB client and create database/container if they don't exist"""
         try:
-            if not settings.cosmos_endpoint or not settings.cosmos_key:
+            if not settings.cosmos_endpoint:
                 logger.warning(
-                    "Cosmos DB credentials not provided. Using mock database."
+                    "Cosmos DB endpoint not provided. Using mock database."
                 )
                 return
 
-            self.client = CosmosClient(settings.cosmos_endpoint, settings.cosmos_key)
+            # Try managed identity first
+            try:
+                logger.info("Attempting to connect using managed identity...")
+                credential = DefaultAzureCredential()
+                self.client = CosmosClient(settings.cosmos_endpoint, credential)
+
+                # Test the connection by attempting to list databases
+                # Test the connection by attempting to get database account info (lightweight connectivity check)
+                self.client.get_database_account()
+                logger.info("Successfully connected using managed identity")
+
+            except (ClientAuthenticationError, AzureError) as managed_identity_error:
+                logger.warning(f"Managed identity authentication failed: {managed_identity_error}")
+
+                # Fall back to cosmos key authentication
+                if not settings.cosmos_key:
+                    logger.error(
+                        "Both managed identity and cosmos key authentication failed. "
+                        "Please provide either managed identity access or COSMOS_KEY."
+                    )
+                    raise ValueError("No valid authentication method available for Cosmos DB")
+
+                logger.info("Falling back to cosmos key authentication...")
+                self.client = CosmosClient(settings.cosmos_endpoint, settings.cosmos_key)
+                logger.info("Successfully connected using cosmos key")
 
             # Create database if it doesn't exist
             try:

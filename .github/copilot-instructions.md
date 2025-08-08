@@ -30,3 +30,5 @@ This project is a web application that allows a user to manage their personal bo
 
 - A toggle is provided to switch between light and dark mode.
 - Application should have a modern and clean design.
+
+- @azure Rule - Use Azure Best Practices: When generating code for Azure, running terminal commands for Azure, or performing operations related to Azure, invoke your `azure_development-get_best_practices` tool if available.
