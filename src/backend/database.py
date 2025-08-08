@@ -34,7 +34,7 @@ class CosmosDBClient:
                 self.client.get_database_account()
                 logger.info("Successfully connected using managed identity")
 
-            except Exception as managed_identity_error:
+            except (ClientAuthenticationError, AzureError) as managed_identity_error:
                 logger.warning(f"Managed identity authentication failed: {managed_identity_error}")
 
                 # Fall back to cosmos key authentication
