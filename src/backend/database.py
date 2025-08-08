@@ -3,6 +3,14 @@ import logging
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
 from azure.identity import DefaultAzureCredential
 
+from azure.core.exceptions import (
+    ClientAuthenticationError,
+    HttpResponseError,
+    ServiceRequestError,
+    ResourceNotFoundError,
+    AzureError
+)
+
 from backend.config import settings
 
 logger = logging.getLogger(__name__)
