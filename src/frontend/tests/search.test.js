@@ -13,7 +13,7 @@ describe('Search Functionality', () => {
       tags: ['react', 'javascript', 'frontend']
     },
     {
-      id: '2', 
+      id: '2',
       title: 'Python Tutorial',
       description: 'Learn Python programming basics',
       url: 'https://python.org/tutorial',

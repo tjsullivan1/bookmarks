@@ -32,7 +32,7 @@ export const api = {
       if (!res.ok) throw new Error('Failed to fetch bookmarks');
       const data = await res.json();
       let allBookmarks = data.bookmarks;
-      
+
       // Apply search filtering BEFORE pagination
       if (search) {
         const searchLower = search.toLowerCase();
