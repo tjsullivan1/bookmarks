@@ -6,7 +6,7 @@ import BookmarkForm from '../components/BookmarkForm.jsx';
 import CategoryFilter from '../components/CategoryFilter.jsx';
 import { DEFAULT_PAGINATION } from '../utils/constants.jsx';
 
-const BookmarkManager = ({ searchTerm = '', onNewBookmark }) => {
+const BookmarkManager = ({ searchTerm = '', onNewBookmark, shouldOpenForm = false }) => {
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,6 +21,14 @@ const BookmarkManager = ({ searchTerm = '', onNewBookmark }) => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [editingBookmark, setEditingBookmark] = useState(null);
   const [showForm, setShowForm] = useState(false);
+
+  // Open form if shouldOpenForm prop changes to true
+  useEffect(() => {
+    if (shouldOpenForm) {
+      setEditingBookmark(null);
+      setShowForm(true);
+    }
+  }, [shouldOpenForm]);
 
   // Load bookmarks
   const loadBookmarks = useCallback(async (options = {}) => {

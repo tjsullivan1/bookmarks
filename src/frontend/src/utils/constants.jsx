@@ -41,7 +41,7 @@ export const DEFAULT_PAGINATION = {
 
 export const KEYBOARD_SHORTCUTS = {
   SEARCH: 'k',
-  NEW_BOOKMARK: 'n',
+  NEW_BOOKMARK: 'd',
   ESCAPE: 'Escape',
 };
 
