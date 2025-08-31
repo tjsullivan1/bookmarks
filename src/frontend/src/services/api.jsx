@@ -4,7 +4,7 @@ import { BOOKMARK_CATEGORIES } from '../utils/constants.jsx';
 // const API_BASE = import.meta.env.VITE_BACKEND_URL
 //   ? `${import.meta.env.VITE_BACKEND_URL}/api/v1`
 //   : '/api/v1';
-const API_BASE = '${process.env.BACKEND_URL}/api/v1';
+const API_BASE = '/api/v1';
 
 export const api = {
   bookmarks: {
@@ -17,7 +17,7 @@ export const api = {
       if (page) params.append('page', page);
       if (pageSize) params.append('page_size', pageSize);
 
-      const fullUrl = `${API_BASE}/bookmarks?${params.toString()}`;
+      const fullUrl = `${API_BASE}/bookmarks/?${params.toString()}`;
 
       const res = await fetch(fullUrl, {
         method: 'GET',
