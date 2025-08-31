@@ -47,8 +47,6 @@ export const KEYBOARD_SHORTCUTS = {
 
 export const TOAST_DURATION = 3000;
 
-export const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000/api/v1';
-
 export const THEME_STORAGE_KEY = 'bookmarks-theme';
 
 export const VALIDATION_MESSAGES = {
