@@ -3,7 +3,7 @@ import { Bookmark, TrendingUp, Clock, Folder, Plus, Search } from 'lucide-react'
 import { api } from '../services/api.jsx';
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '../utils/constants.jsx';
 
-const Dashboard = ({ onEditBookmark, onDeleteBookmark }) => {
+const Dashboard = ({ onEditBookmark, onDeleteBookmark, onNewBookmark }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -224,7 +224,10 @@ const Dashboard = ({ onEditBookmark, onDeleteBookmark }) => {
           Quick Actions
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <button className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors">
+          <button
+            onClick={onNewBookmark}
+            className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors"
+          >
             <Plus className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Add Bookmark

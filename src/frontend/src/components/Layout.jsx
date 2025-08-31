@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bookmark, Plus, Search, Home, Grid } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle.jsx';
@@ -9,6 +9,7 @@ const Layout = ({ children, onSearch, onNewBookmark, searchValue = '' }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const searchBarRef = useRef(null);
 
   // Global keyboard shortcuts
   useEffect(() => {
@@ -16,7 +17,12 @@ const Layout = ({ children, onSearch, onNewBookmark, searchValue = '' }) => {
       // Cmd/Ctrl + K for search
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === KEYBOARD_SHORTCUTS.SEARCH) {
         e.preventDefault();
-        setIsSearchFocused(true);
+        // Focus the search input on desktop, or show mobile modal
+        if (window.innerWidth >= 768) { // md breakpoint
+          searchBarRef.current?.focus();
+        } else {
+          setIsSearchFocused(true);
+        }
       }
 
       // Cmd/Ctrl + N for new bookmark
@@ -85,6 +91,7 @@ const Layout = ({ children, onSearch, onNewBookmark, searchValue = '' }) => {
             {/* Search Bar - Hidden on mobile, visible on tablet+ */}
             <div className="hidden md:flex flex-1 max-w-xl mx-8">
               <SearchBar
+                ref={searchBarRef}
                 onSearch={onSearch}
                 placeholder="Search bookmarks..."
                 className="w-full"
@@ -106,7 +113,7 @@ const Layout = ({ children, onSearch, onNewBookmark, searchValue = '' }) => {
               <button
                 onClick={onNewBookmark}
                 className="flex items-center space-x-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
-                title="Add new bookmark (Ctrl+N)"
+                title="Add new bookmark (Ctrl+D)"
               >
                 <Plus className="h-4 w-4" />
                 <span className="hidden sm:inline">Add Bookmark</span>
@@ -138,17 +145,17 @@ const Layout = ({ children, onSearch, onNewBookmark, searchValue = '' }) => {
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
             <div className="text-sm text-gray-500 dark:text-gray-400">
-              © 2024 Bookmarks Manager. Built with React & Tailwind CSS.
+              © 2025 Bookmarks Manager. Built with React & Tailwind CSS.
             </div>
             <div className="flex items-center space-x-6 text-sm text-gray-500 dark:text-gray-400">
               <div className="flex items-center space-x-1">
-                <kbd className="rounded border border-gray-200 px-1.5 py-0.5 text-xs font-mono dark:border-gray-600">⌘</kbd>
+                <kbd className="rounded border border-gray-200 px-1.5 py-0.5 text-xs font-mono dark:border-gray-600">Ctrl</kbd>
                 <kbd className="rounded border border-gray-200 px-1.5 py-0.5 text-xs font-mono dark:border-gray-600">K</kbd>
                 <span>Search</span>
               </div>
               <div className="flex items-center space-x-1">
-                <kbd className="rounded border border-gray-200 px-1.5 py-0.5 text-xs font-mono dark:border-gray-600">⌘</kbd>
-                <kbd className="rounded border border-gray-200 px-1.5 py-0.5 text-xs font-mono dark:border-gray-600">N</kbd>
+                <kbd className="rounded border border-gray-200 px-1.5 py-0.5 text-xs font-mono dark:border-gray-600">Ctrl</kbd>
+                <kbd className="rounded border border-gray-200 px-1.5 py-0.5 text-xs font-mono dark:border-gray-600">D</kbd>
                 <span>New</span>
               </div>
             </div>

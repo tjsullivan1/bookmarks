@@ -7,6 +7,7 @@ import { useTheme } from './hooks/useTheme.jsx';
 
 function AppContent() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [shouldOpenForm, setShouldOpenForm] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { theme } = useTheme();
@@ -24,6 +25,10 @@ function AppContent() {
     if (location.pathname !== '/bookmarks') {
       navigate('/bookmarks');
     }
+    // Trigger the new bookmark form to open
+    setShouldOpenForm(true);
+    // Reset the flag after a short delay
+    setTimeout(() => setShouldOpenForm(false), 100);
   };
 
   return (
@@ -39,7 +44,7 @@ function AppContent() {
         {/* Dashboard route */}
         <Route
           path="/dashboard"
-          element={<Dashboard />}
+          element={<Dashboard onNewBookmark={handleNewBookmark} />}
         />
 
         {/* Bookmarks management route */}
@@ -49,6 +54,7 @@ function AppContent() {
             <BookmarkManager
               searchTerm={searchTerm}
               onNewBookmark={handleNewBookmark}
+              shouldOpenForm={shouldOpenForm}
             />
           }
         />

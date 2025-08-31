@@ -41,13 +41,11 @@ export const DEFAULT_PAGINATION = {
 
 export const KEYBOARD_SHORTCUTS = {
   SEARCH: 'k',
-  NEW_BOOKMARK: 'n',
+  NEW_BOOKMARK: 'd',
   ESCAPE: 'Escape',
 };
 
 export const TOAST_DURATION = 3000;
-
-export const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000/api/v1';
 
 export const THEME_STORAGE_KEY = 'bookmarks-theme';
 

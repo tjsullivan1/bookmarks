@@ -4,7 +4,7 @@ services:
   bookmarks-backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.backend
     ports:
       - "8000:8000"
     environment:
@@ -15,11 +15,25 @@ services:
       - COSMOS_CONTAINER_NAME=${COSMOS_CONTAINER_NAME:-bookmarks}
     volumes:
       # Mount logs directory for development
-      - ./logs:/app/logs
+      - ./logs:/app/logs/be
     healthcheck:
       test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
+  bookmarks-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8080:80"
+    environment:
+      - DEBUG=true
+      - BACKEND_URL="http://bookmarks-backend:8000"
+      - VITE_BACKEND_URL="http://bookmarks-backend:8000"
+    volumes:
+      # Mount logs directory for development
+      - ./logs:/app/logs/fe
     restart: unless-stopped
