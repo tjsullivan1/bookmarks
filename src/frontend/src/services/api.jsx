@@ -1,9 +1,10 @@
 import { BOOKMARK_CATEGORIES } from '../utils/constants.jsx';
 
-// Use environment variable for deployed backend, fallback to proxy for local dev
-const API_BASE = import.meta.env.VITE_BACKEND_URL
-  ? `${import.meta.env.VITE_BACKEND_URL}/api/v1`
-  : '/api/v1';
+// // Use environment variable for deployed backend, fallback to proxy for local dev
+// const API_BASE = import.meta.env.VITE_BACKEND_URL
+//   ? `${import.meta.env.VITE_BACKEND_URL}/api/v1`
+//   : '/api/v1';
+const API_BASE = '${process.env.BACKEND_URL}/api/v1';
 
 export const api = {
   bookmarks: {
