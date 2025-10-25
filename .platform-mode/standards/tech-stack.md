@@ -15,7 +15,7 @@ Global tech stack defaults for infrastructure/platform projects based from this 
 - Production Environment: main branch
 - Staging Environment: staging branch
 - Primary Cloud Provider: Microsoft Azure
-- Application Hosting: Azure Kubernetes Service
+- Application Hosting: Azure App Service
 - Hosting Region: Primary region based on user/project requirements - User/Environment Defined
 - API Documentation: OpenAPI/Swagger with Azure API Management
 - Local Development: Docker, Docker Compose, Dev Containers
