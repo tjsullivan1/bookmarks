@@ -17,9 +17,9 @@
 ## Team Composition
 | Role | Team Member | Availability | Capacity | Key Skills |
 |------|-------------|--------------|----------|------------|
-| Senior Platform Engineer | Alex Chen | 100% (80h) | 20 pts | Terraform, Azure Architecture, Infrastructure Design |
-| DevOps Engineer | Jordan Martinez | 100% (72h) | 18 pts | CI/CD, GitHub Actions, Azure DevOps, Container Management |
-| Full-Stack Developer | Sam Taylor | 100% (64h) | 16 pts | React, FastAPI, Container Optimization, Application Integration |
+| Senior Platform Engineer | [To be assigned] | 100% (80h) | 20 pts | Terraform, Azure Architecture, Infrastructure Design |
+| DevOps Engineer | [To be assigned] | 100% (72h) | 18 pts | CI/CD, GitHub Actions, Azure DevOps, Container Management |
+| Full-Stack Developer | [To be assigned] | 100% (64h) | 16 pts | React, FastAPI, Container Optimization, Application Integration |
 
 **Total Available Hours**: 216 hours
 **Team Velocity**: 54 story points
@@ -30,20 +30,20 @@
 ### Committed Stories
 | Story ID | Story Title | Priority | Estimate | Primary Assignee | Dependencies |
 |----------|-------------|----------|----------|------------------|--------------|
-| [Story001](../stories/story001.story.md) | Terraform Module Structure Setup | High | 5 pts | Alex Chen | Azure subscription access |
-| [Story002](../stories/story002.story.md) | Azure Resource Group and App Service Plan | High | 8 pts | Alex Chen | Story001 |
-| [Story003](../stories/story003.story.md) | Azure Web Apps for Frontend and Backend | High | 8 pts | Alex Chen | Story002 |
-| [Story004](../stories/story004.story.md) | Azure Container Registry Integration | High | 5 pts | Jordan Martinez | Story002 |
-| [Story005](../stories/story005.story.md) | Cosmos DB Foundation Setup | High | 8 pts | Alex Chen | Story002 |
-| [Story006](../stories/story006.story.md) | Azure Key Vault and Secrets Management | High | 6 pts | Jordan Martinez | Story003, Story005 |
-| [Story007](../stories/story007.story.md) | Basic Application Insights Setup | High | 5 pts | Sam Taylor | Story003 |
+| [Story001](../stories/story001.story.md) | Terraform Module Structure Setup | High | 5 pts | Senior Platform Engineer | Azure subscription access |
+| [Story002](../stories/story002.story.md) | Azure Resource Group and App Service Plan | High | 8 pts | Senior Platform Engineer | Story001 |
+| [Story003](../stories/story003.story.md) | Azure Web Apps for Frontend and Backend | High | 8 pts | Senior Platform Engineer | Story002 |
+| [Story004](../stories/story004.story.md) | Azure Container Registry Integration | High | 5 pts | DevOps Engineer | Story002 |
+| [Story005](../stories/story005.story.md) | Cosmos DB Foundation Setup | High | 8 pts | Senior Platform Engineer | Story002 |
+| [Story006](../stories/story006.story.md) | Azure Key Vault and Secrets Management | High | 6 pts | DevOps Engineer | Story003, Story005 |
+| [Story007](../stories/story007.story.md) | Basic Application Insights Setup | High | 5 pts | Full-Stack Developer | Story003 |
 | [Story008](../stories/story008.story.md) | Infrastructure Testing and Validation | High | 9 pts | All Team | All previous stories |
 
 **Total Committed**: 54 story points (100% of capacity)
 
 ### Sprint Tasks Breakdown
 
-#### Story001: Terraform Module Structure Setup (5 pts) - Alex Chen
+#### Story001: Terraform Module Structure Setup (5 pts) - Senior Platform Engineer
 - [ ] **T001.1**: Create module directory structure with platform standards (4h)
 - [ ] **T001.2**: Implement variable definitions with comprehensive validation (6h)
 - [ ] **T001.3**: Set up locals.tf for naming conventions and resource organization (3h)
@@ -54,7 +54,7 @@
 
 **Total: 24 hours**
 
-#### Story002: Azure Resource Group and App Service Plan (8 pts) - Alex Chen
+#### Story002: Azure Resource Group and App Service Plan (8 pts) - Senior Platform Engineer
 - [ ] **T002.1**: Implement Resource Group resource with naming and tagging (4h)
 - [ ] **T002.2**: Configure App Service Plan with environment-specific SKUs (4h)
 - [ ] **T002.3**: Set up Terraform backend configuration for state management (3h)
@@ -65,7 +65,7 @@
 
 **Total: 22 hours**
 
-#### Story003: Azure Web Apps for Frontend and Backend (8 pts) - Alex Chen
+#### Story003: Azure Web Apps for Frontend and Backend (8 pts) - Senior Platform Engineer
 - [ ] **T003.1**: Implement frontend Web App resource with Linux container support (5h)
 - [ ] **T003.2**: Implement backend Web App resource with container deployment (5h)
 - [ ] **T003.3**: Configure system-assigned managed identities for both apps (3h)
@@ -76,7 +76,7 @@
 
 **Total: 24 hours**
 
-#### Story004: Azure Container Registry Integration (5 pts) - Jordan Martinez
+#### Story004: Azure Container Registry Integration (5 pts) - DevOps Engineer
 - [ ] **T004.1**: Implement Azure Container Registry resource with Basic SKU (4h)
 - [ ] **T004.2**: Configure admin credentials and access policies (3h)
 - [ ] **T004.3**: Set up RBAC assignments for Web App managed identities (4h)
@@ -87,7 +87,7 @@
 
 **Total: 20 hours**
 
-#### Story005: Cosmos DB Foundation Setup (8 pts) - Alex Chen
+#### Story005: Cosmos DB Foundation Setup (8 pts) - Senior Platform Engineer
 - [ ] **T005.1**: Implement Cosmos DB account with serverless billing (5h)
 - [ ] **T005.2**: Configure database and container with partition strategy (4h)
 - [ ] **T005.3**: Set up backup and retention policies by environment (3h)
@@ -98,7 +98,7 @@
 
 **Total: 24 hours**
 
-#### Story006: Azure Key Vault and Secrets Management (6 pts) - Jordan Martinez
+#### Story006: Azure Key Vault and Secrets Management (6 pts) - DevOps Engineer
 - [ ] **T006.1**: Implement Key Vault resource with RBAC authorization (4h)
 - [ ] **T006.2**: Configure RBAC role assignments for managed identities (4h)
 - [ ] **T006.3**: Store initial secrets from Cosmos DB and Container Registry (3h)
@@ -109,7 +109,7 @@
 
 **Total: 22 hours**
 
-#### Story007: Basic Application Insights Setup (5 pts) - Sam Taylor
+#### Story007: Basic Application Insights Setup (5 pts) - Full-Stack Developer
 - [ ] **T007.1**: Create Log Analytics workspace for centralized logging (3h)
 - [ ] **T007.2**: Implement Application Insights workspace with proper configuration (4h)
 - [ ] **T007.3**: Configure Web Apps integration with Application Insights (4h)
@@ -162,7 +162,7 @@
 | Dependency | Description | Owner | Target Date | Risk Level | Mitigation |
 |------------|-------------|-------|-------------|------------|------------|
 | **Azure Subscription Access** | Development subscription with Contributor permissions | IT Operations | Oct 25 | Low | Pre-confirmed access, escalation path established |
-| **Terraform Backend Setup** | Azure Storage Account for remote state management | Alex Chen | Oct 26 | Medium | Manual setup if automation fails |
+| **Terraform Backend Setup** | Azure Storage Account for remote state management | Senior Platform Engineer | Oct 26 | Medium | Manual setup if automation fails |
 | **Enterprise Standards** | Naming conventions and tagging policies | Platform Team | Oct 25 | Low | Standards documented and approved |
 
 ### External Dependencies
@@ -176,11 +176,11 @@
 
 | Risk | Probability | Impact | Mitigation Strategy | Owner |
 |------|-------------|--------|-------------------|-------|
-| **Team Terraform Expertise Gap** | Medium (50%) | High | Week 1 intensive training, pair programming, external consultant standby | Alex Chen |
-| **Azure Service Limitations** | Low (20%) | High | Early validation testing, alternative service options documented | Alex Chen |
-| **Complex Resource Dependencies** | Medium (40%) | Medium | Clear dependency mapping, modular design, comprehensive testing | Jordan Martinez |
-| **State Management Issues** | Low (15%) | High | Remote backend with locking, regular backups, recovery procedures | Alex Chen |
-| **Security Configuration Complexity** | Medium (35%) | Medium | Early security engagement, automated validation, pattern templates | Jordan Martinez |
+| **Team Terraform Expertise Gap** | Medium (50%) | High | Week 1 intensive training, pair programming, external consultant standby | Senior Platform Engineer |
+| **Azure Service Limitations** | Low (20%) | High | Early validation testing, alternative service options documented | Senior Platform Engineer |
+| **Complex Resource Dependencies** | Medium (40%) | Medium | Clear dependency mapping, modular design, comprehensive testing | DevOps Engineer |
+| **State Management Issues** | Low (15%) | High | Remote backend with locking, regular backups, recovery procedures | Senior Platform Engineer |
+| **Security Configuration Complexity** | Medium (35%) | Medium | Early security engagement, automated validation, pattern templates | DevOps Engineer |
 
 ## Daily Standup Structure
 

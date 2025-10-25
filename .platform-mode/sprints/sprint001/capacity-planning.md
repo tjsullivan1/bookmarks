@@ -4,7 +4,7 @@
 
 ### Individual Capacity Breakdown
 
-#### Alex Chen - Senior Platform Engineer
+#### Senior Platform Engineer
 - **Total Hours Available**: 80 hours (2 weeks × 40 hours)
 - **Capacity Allocation**:
   - **Sprint Work**: 70 hours (87.5%)
@@ -18,13 +18,13 @@
 - Story 001: Terraform Module Structure (5 pts, 24h)
 - Story 002: Resource Group & App Service Plan (8 pts, 22h)
 - Story 003: Azure Web Apps (8 pts, 24h)
-- Story 005: Cosmos DB Setup (8 pts, 24h) - **Note**: Requires collaboration with Jordan for Story 004 timing
+- Story 005: Cosmos DB Setup (8 pts, 24h) - **Note**: Requires collaboration with DevOps Engineer for Story 004 timing
 
 **Workload Assessment**:
 - **Total**: 29 story points assigned vs 20 capacity → **Over-allocated by 9 points**
-- **Mitigation**: Distribute Story 005 tasks with Jordan Martinez to balance load
+- **Mitigation**: Distribute Story 005 tasks with DevOps Engineer to balance load
 
-#### Jordan Martinez - DevOps Engineer
+#### DevOps Engineer
 - **Total Hours Available**: 72 hours (90% availability due to production support rotation)
 - **Capacity Allocation**:
   - **Sprint Work**: 62 hours (86%)
@@ -41,9 +41,9 @@
 
 **Workload Assessment**:
 - **Total**: 11 story points + collaboration vs 18 capacity → **Under-allocated by 7 points**
-- **Opportunity**: Can take on additional Story 005 tasks from Alex
+- **Opportunity**: Can take on additional Story 005 tasks from Senior Platform Engineer
 
-#### Sam Taylor - Full-Stack Developer
+#### Full-Stack Developer
 - **Total Hours Available**: 64 hours (80% allocation to platform work)
 - **Capacity Allocation**:
   - **Sprint Work**: 54 hours (84%)
@@ -64,25 +64,25 @@
 ### Capacity Rebalancing Plan
 
 #### Load Redistribution
-To address Alex's over-allocation:
+To address Senior Platform Engineer's over-allocation:
 
 **Story 005 Task Redistribution**:
-- **Alex retains**: T005.1 (Cosmos account), T005.2 (Database/container), T005.7 (Documentation) = 12h
-- **Jordan takes**: T005.3 (Backup policies), T005.4 (Security config), T005.6 (Testing) = 10h
-- **Sam supports**: T005.5 (Connection outputs), integration testing support = 2h
+- **Senior Platform Engineer retains**: T005.1 (Cosmos account), T005.2 (Database/container), T005.7 (Documentation) = 12h
+- **DevOps Engineer takes**: T005.3 (Backup policies), T005.4 (Security config), T005.6 (Testing) = 10h
+- **Full-Stack Developer supports**: T005.5 (Connection outputs), integration testing support = 2h
 
 **Revised Allocations**:
-- **Alex**: 20 points, 70 hours → **Balanced**
-- **Jordan**: 14 points, 52 hours → **Well-balanced with buffer**
-- **Sam**: 14 points, 54 hours → **Well-balanced**
+- **Senior Platform Engineer**: 20 points, 70 hours → **Balanced**
+- **DevOps Engineer**: 14 points, 52 hours → **Well-balanced with buffer**
+- **Full-Stack Developer**: 14 points, 54 hours → **Well-balanced**
 
 ### Daily Capacity Planning
 
 #### Week 1 (Oct 25 - Nov 1)
 **Focus**: Foundation and Core Services
 
-| Day | Alex Chen | Jordan Martinez | Sam Taylor |
-|-----|-----------|-----------------|------------|
+| Day | Senior Platform Engineer | DevOps Engineer | Full-Stack Developer |
+|-----|---------------------------|------------------|----------------------|
 | **Fri 10/25** | Sprint planning, Story 001 start | Sprint planning, infrastructure setup | Sprint planning, environment setup |
 | **Mon 10/28** | Story 001 completion, Story 002 start | Story 004 start, security review prep | Story 007 research, Log Analytics planning |
 | **Tue 10/29** | Story 002 development | Story 004 development | Story 007 start |
@@ -92,8 +92,8 @@ To address Alex's over-allocation:
 #### Week 2 (Nov 4 - Nov 8)
 **Focus**: Security, Monitoring, and Validation
 
-| Day | Alex Chen | Jordan Martinez | Sam Taylor |
-|-----|-----------|-----------------|------------|
+| Day | Senior Platform Engineer | DevOps Engineer | Full-Stack Developer |
+|-----|---------------------------|------------------|----------------------|
 | **Mon 11/4** | Story 003 completion, Story 005 start | Story 006 development | Story 007 completion |
 | **Tue 11/5** | Story 005 development | Story 006 completion | Story 008 testing framework |
 | **Wed 11/6** | Story 005 completion | Story 008 cross-env testing | Story 008 integration testing |
@@ -103,21 +103,21 @@ To address Alex's over-allocation:
 ### Collaboration and Knowledge Sharing
 
 #### Pair Programming Schedule
-- **Mon 10/28, 2-4 PM**: Alex & Jordan - Azure RBAC patterns
-- **Wed 10/30, 10-12 PM**: Jordan & Sam - Key Vault integration with App Insights
+- **Mon 10/28, 2-4 PM**: Senior Platform Engineer & DevOps Engineer - Azure RBAC patterns
+- **Wed 10/30, 10-12 PM**: DevOps Engineer & Full-Stack Developer - Key Vault integration with App Insights
 - **Thu 11/6, 3-5 PM**: All team - Integration testing collaboration
 
 #### Knowledge Transfer Sessions
 - **Daily Brief (15 min after standup)**: Technical discoveries and patterns
-- **Wed 10/30, 4-5 PM**: Alex leads - Terraform best practices workshop
-- **Mon 11/4, 4-5 PM**: Jordan leads - Azure security patterns workshop
-- **Thu 11/7, 4-5 PM**: Sam leads - Testing and validation strategies
+- **Wed 10/30, 4-5 PM**: Senior Platform Engineer leads - Terraform best practices workshop
+- **Mon 11/4, 4-5 PM**: DevOps Engineer leads - Azure security patterns workshop
+- **Thu 11/7, 4-5 PM**: Full-Stack Developer leads - Testing and validation strategies
 
 #### Code Review Schedule
-- **Story 001-003**: Alex as primary author, Jordan as reviewer
-- **Story 004, 006**: Jordan as primary author, Alex as reviewer
-- **Story 005**: Shared development, Sam as reviewer
-- **Story 007-008**: Sam as primary author, Alex as reviewer
+- **Story 001-003**: Senior Platform Engineer as primary author, DevOps Engineer as reviewer
+- **Story 004, 006**: DevOps Engineer as primary author, Senior Platform Engineer as reviewer
+- **Story 005**: Shared development, Full-Stack Developer as reviewer
+- **Story 007-008**: Full-Stack Developer as primary author, Senior Platform Engineer as reviewer
 
 ### Meeting Schedule and Time Management
 
@@ -135,13 +135,13 @@ To address Alex's over-allocation:
 ### Capacity Risk Mitigation
 
 #### Over-allocation Risks
-- **Alex Chen over-commitment**: Mitigated through task redistribution
+- **Senior Platform Engineer over-commitment**: Mitigated through task redistribution
 - **Complex integration time**: 15% buffer allocated across team
 - **Learning curve delays**: Pair programming and knowledge transfer scheduled
 
 #### Under-utilization Opportunities
-- **Jordan's buffer capacity**: Available for cross-story support
-- **Sam's buffer capacity**: Additional testing and documentation
+- **DevOps Engineer's buffer capacity**: Available for cross-story support
+- **Full-Stack Developer's buffer capacity**: Additional testing and documentation
 - **Team collaboration**: Shared ownership of Story 008
 
 ### Performance Monitoring
@@ -184,6 +184,6 @@ Based on Sprint 001 performance:
 - **Load Balancing**: Apply load balancing lessons to Sprint 002 planning
 
 #### Capacity Preparation
-- **Jordan's CI/CD Expertise**: Primary lead for Sprint 002 pipeline development
-- **Alex's Infrastructure Foundation**: Support role for pipeline infrastructure integration
-- **Sam's Application Knowledge**: Lead integration testing and application deployment aspects
+- **DevOps Engineer's CI/CD Expertise**: Primary lead for Sprint 002 pipeline development
+- **Senior Platform Engineer's Infrastructure Foundation**: Support role for pipeline infrastructure integration
+- **Full-Stack Developer's Application Knowledge**: Lead integration testing and application deployment aspects
