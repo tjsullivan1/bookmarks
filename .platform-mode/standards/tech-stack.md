@@ -32,7 +32,7 @@ Global tech stack defaults for infrastructure/platform projects based from this 
 - Authentication/Authorization: Azure Active Directory
 - Secret Management: Azure Key Vault
 - Code Security Scanning: GitHub Advanced Security
-- Container Security: Azure Defender for Containers
+- Container Security: Docker Scout
 
 ## Communication & Collaboration
 
@@ -48,7 +48,7 @@ Global tech stack defaults for infrastructure/platform projects based from this 
 ## Azure-Specific Services
 
 - Container Orchestration: Azure Kubernetes Service
-- Container Registry: Azure Container Registry
+- Container Registry: Docker Hub
 - API Gateway: Azure API Management
 - Identity Provider: Azure Active Directory (Aka. Microsoft Entra)
 - Networking: Azure Virtual Network, Azure Load Balancer
