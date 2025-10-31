@@ -11,7 +11,7 @@ jobs:
     name: Test Before Making Python Container
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -35,16 +35,16 @@ jobs:
       attestations: write
       id-token: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Docker Login
-      uses: docker/login-action@v3.2.0
+      uses: docker/login-action@v3.6.0
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Docker Metadata action
       id: meta
-      uses: docker/metadata-action@v5.5.1
+      uses: docker/metadata-action@v5.8.0
       with:
         images: tjsullivan1/bookmarks-backend
         tags: |
@@ -58,7 +58,7 @@ jobs:
 
     - name: Build and push Docker image
       id: push
-      uses: docker/build-push-action@v6.3.0
+      uses: docker/build-push-action@v6.18.0
       with:
         context: .
         file: ./Dockerfile.backend
@@ -76,16 +76,16 @@ jobs:
       attestations: write
       id-token: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Docker Login
-      uses: docker/login-action@v3.2.0
+      uses: docker/login-action@v3.6.0
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Docker Metadata action
       id: meta
-      uses: docker/metadata-action@v5.5.1
+      uses: docker/metadata-action@v5.8.0
       with:
         images: tjsullivan1/bookmarks-frontend
         tags: |
@@ -99,7 +99,7 @@ jobs:
 
     - name: Build and push Docker image
       id: push
-      uses: docker/build-push-action@v6.3.0
+      uses: docker/build-push-action@v6.18.0
       with:
         context: .
         file: ./Dockerfile.frontend
