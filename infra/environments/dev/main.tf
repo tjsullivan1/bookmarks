@@ -5,12 +5,12 @@ terraform {
   required_version = ">= 1.5.0"
 
   # Backend configuration for remote state
-  # backend "azurerm" {
-  #   resource_group_name  = "tfstate-dev-rg"
-  #   storage_account_name = "tfstatedevsa"
-  #   container_name       = "tfstate"
-  #   key                  = "bookmarks/dev/terraform.tfstate"
-  # }
+  backend "azurerm" {
+    resource_group_name  = "rg-tjs-tpxs"
+    storage_account_name = "satjstpxs"
+    container_name       = "tfstate"
+    key                  = "bookmarks/dev/terraform.tfstate"
+  }
 }
 
 # Configure the bookmarks platform module
@@ -19,11 +19,11 @@ module "bookmarks_platform" {
 
   environment = "dev"
   project     = "bookmarks"
-  location    = "East US"
+  location    = "Canada Central"
 
   # Development-optimized configuration
   app_service_plan_sku = {
-    name     = "B1"
+    name     = "S1"
     capacity = 1
   }
 

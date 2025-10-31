@@ -17,8 +17,3 @@ provider "azurerm" {
     }
   }
 }
-
-# Configure the Random Provider
-provider "random" {
-  # Configuration options
-}
