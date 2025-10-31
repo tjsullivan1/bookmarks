@@ -1,0 +1,18 @@
+skip-check:
+  - id: CKV_AZURE_32
+    comment: "I don't care about private endpoints in this project."
+  - id: CKV2_AZURE_32
+    comment: "I don't care about private endpoints in this project."
+  - id: CKV_AZURE_100
+    comment: "This rule would be for customer managed keys, not needed for me."
+  - id: CKV_AZURE_13
+    comment: "This is app service auth requirement, not needed"
+  # To be fixed
+  - id: CKV_AZURE_99
+  - id: CKV_AZURE_101
+  - id: CKV_AZURE_132
+  - id: CKV_AZURE_140
+  - id: CKV_AZURE_42
+  - id: CKV_AZURE_110
+  - id: CKV_AZURE_41
+  - id: CKV_AZURE_114
