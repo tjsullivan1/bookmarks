@@ -3,8 +3,8 @@ version: '3.8'
 services:
   bookmarks-backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ..
+      dockerfile: docker/Dockerfile.backend
     ports:
       - "8000:8000"
     environment:
@@ -25,8 +25,8 @@ services:
     restart: unless-stopped
   bookmarks-frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
     ports:
       - "8080:80"
     environment:
