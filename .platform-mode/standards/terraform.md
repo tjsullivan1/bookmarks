@@ -40,7 +40,7 @@ module_name/
 
 ### Naming Conventions
 - Use `snake_case` for all Terraform identifiers
-- Resource names should be descriptive and include environment: `${var.environment}_${var.project}_${resource_type}`
+- Resource names should be descriptive and include environment: `${resource_type}_${var.environment}_${var.project}`
 - Use locals for consistent naming patterns:
 
 ```hcl

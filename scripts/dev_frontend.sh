@@ -3,8 +3,8 @@
 # Development startup script for the frontend
 echo "🚀 Starting Bookmarks Frontend Development Server..."
 
-# Navigate to frontend directory
-cd "$(dirname "$0")/src/frontend"
+# Navigate to frontend directory from scripts folder
+cd "$(dirname "$0")/../src/frontend"
 
 # Check if node_modules exists, install dependencies if not
 if [ ! -d "node_modules" ]; then

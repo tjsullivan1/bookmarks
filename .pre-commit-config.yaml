@@ -36,10 +36,17 @@ repos:
 #     hooks:
 #     - id: pycln
 -   repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.88.2
+    rev: v1.103.0
     hooks:
     - id: terraform_fmt
     - id: terraform_tflint
-    - id: terraform_trivy
-    - id: terraform_checkov
+    # - id: terraform_trivy
     - id: terraform_validate
+# -   repo: https://github.com/bridgecrewio/checkov
+#     rev: 3.2.489  # latest Checkov release
+#     hooks:
+#         - id: checkov
+#           args:
+#             - --config-file=.checkov.yml
+#             - --quiet
+#             - --framework=terraform

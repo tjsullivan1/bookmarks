@@ -79,7 +79,7 @@ src/backend/
 
 3. **Run the server:**
    ```bash
-   ./run_server.sh
+   ./scripts/run_server.sh
    ```
 
 4. **Access the API:**
@@ -98,13 +98,14 @@ For containerized deployment, use Docker:
    # Edit .env with your Azure Cosmos DB credentials
 
    # Build and start the container
+   cd docker
    docker-compose up --build
    ```
 
 2. **Or build and run manually:**
    ```bash
    # Build the Docker image
-   docker build -t bookmarks-backend .
+   docker build -f docker/Dockerfile.backend -t bookmarks-backend .
 
    # Run the container
    docker run -p 8000:8000 \
@@ -116,7 +117,7 @@ For containerized deployment, use Docker:
 3. **Production deployment:**
    ```bash
    # Build production image
-   docker build -t bookmarks-backend:prod .
+   docker build -f docker/Dockerfile.backend -t bookmarks-backend:prod .
 
    # Run with production settings
    docker run -d -p 8000:8000 \
@@ -134,7 +135,7 @@ For containerized deployment, use Docker:
 PYTHONPATH=src python -m pytest tests/backend/ -v
 
 # Demo API functionality
-./demo_api.sh
+./scripts/demo_api.sh
 ```
 
 ## 🔧 Configuration

@@ -21,8 +21,9 @@ echo "🐳 Building Docker image..."
 echo "Image: ${FULL_IMAGE_NAME}:${VERSION}"
 echo "----------------------------------------"
 
-# Build the image
-docker build -t "${FULL_IMAGE_NAME}:${VERSION}" .
+# Build the image (navigate to project root first)
+cd "$(dirname "$0")/.."
+docker build -f docker/Dockerfile.backend -t "${FULL_IMAGE_NAME}:${VERSION}" .
 
 # Also tag as latest if not already latest
 if [ "$VERSION" != "latest" ]; then
