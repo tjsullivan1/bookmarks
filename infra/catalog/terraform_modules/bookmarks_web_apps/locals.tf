@@ -6,22 +6,22 @@ locals {
   name_prefix = "${var.environment}-${var.project}"
 
   # Resource naming
-  resource_group_name          = "${local.name_prefix}-rg"
-  app_service_plan_name        = "${local.name_prefix}-asp"
-  frontend_app_name            = "${local.name_prefix}-frontend-app"
-  backend_app_name             = "${local.name_prefix}-backend-app"
+  resource_group_name          = "rg-${local.name_prefix}"
+  app_service_plan_name        = "asp-${local.name_prefix}"
+  frontend_app_name            = "wa-fe-${local.name_prefix}"
+  backend_app_name             = "wa-be-${local.name_prefix}"
   cosmos_database_name         = "bookmarks_db"
   cosmos_container_name        = "bookmarks"
-  application_insights_name    = "${local.name_prefix}-ai"
-  log_analytics_workspace_name = "${local.name_prefix}-law"
+  application_insights_name    = "ai-${local.name_prefix}"
+  log_analytics_workspace_name = "law-${local.name_prefix}"
 
   # Generate random suffix for globally unique resources
   random_suffix = random_string.unique_suffix.result
 
   # Update globally unique resource names with suffix
-  container_registry_name_unique = "${var.environment}${var.project}${local.random_suffix}acr"
-  cosmos_account_name_unique     = "${local.name_prefix}-${local.random_suffix}-cosmos"
-  key_vault_name_unique          = "${local.name_prefix}-${local.random_suffix}-kv"
+  container_registry_name_unique = "acr${var.environment}${var.project}${local.random_suffix}"
+  cosmos_account_name_unique     = "cdb-${local.name_prefix}-${local.random_suffix}"
+  key_vault_name_unique          = "kv-${local.name_prefix}-${local.random_suffix}"
 
   # Common tags
   common_tags = merge(var.tags, {
