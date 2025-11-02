@@ -40,7 +40,7 @@ WORKDIR /app
 
 # Copy source code
 COPY src/ src/
-COPY run_server.sh .
+COPY scripts/run_server.sh .
 
 # Make run script executable
 RUN chmod +x run_server.sh
