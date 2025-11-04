@@ -37,8 +37,9 @@
 | Story013 | Azure Web Apps Deployment | High | 10 pts | Platform Engineer | Story012, Infrastructure |
 | Story014 | Health Validation & Quality Gates | High | 8 pts | Full-Stack Developer | Story013 |
 | Story015 | Rollback & Recovery Automation | High | 8 pts | Senior DevOps Engineer | Story014 |
+| Story016 | Terraform Infrastructure Deployment Automation | Medium | 8 pts | Senior DevOps Engineer | Story009, Epic 001 |
 
-**Total Committed**: 54 story points (100% of capacity)
+**Total Committed**: 62 story points (115% of capacity - Story016 added as stretch goal)
 
 ### Sprint Tasks Breakdown
 
@@ -114,6 +115,16 @@
 - [ ] **T015.6**: Test rollback scenarios with various failure conditions (6h)
 
 **Total: 24 hours**
+
+#### Story016: Terraform Infrastructure Deployment Automation (8 pts) - Senior DevOps Engineer (Stretch Goal)
+- [ ] **T016.1**: Create Terraform validation workflow with security scanning (4h)
+- [ ] **T016.2**: Implement multi-environment deployment pipeline with approval gates (5h)
+- [ ] **T016.3**: Configure Azure Storage backend for Terraform state management (3h)
+- [ ] **T016.4**: Set up infrastructure drift detection with scheduled validation (4h)
+- [ ] **T016.5**: Implement Terraform rollback and recovery procedures (4h)
+- [ ] **T016.6**: Create infrastructure deployment documentation and runbooks (4h)
+
+**Total: 24 hours** (Only if Stories 009-015 complete ahead of schedule)
 
 ## Success Metrics
 

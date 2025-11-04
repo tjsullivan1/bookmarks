@@ -74,9 +74,13 @@ Essential pipeline functionality that must be delivered:
 - Azure Web Apps Deployment (10 pts)
 - Health Validation & Quality Gates (8 pts)
 
-### Stretch Goals (15% Capacity - 8 Story Points)
-Advanced features if capacity allows:
+### Stretch Commitment (100% Capacity - 54 Story Points)
+Pipeline enhancement that completes core CI/CD capabilities:
 - Rollback & Recovery Automation (8 pts)
+
+### Ambitious Stretch Goal (115% Capacity - 62 Story Points)
+Infrastructure automation that bridges manual and automated deployments:
+- Terraform Infrastructure Deployment Automation (8 pts)
 
 ### Buffer Allocation
 - **Technical Risk Buffer**: 4 story points
