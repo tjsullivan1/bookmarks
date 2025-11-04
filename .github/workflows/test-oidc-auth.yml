@@ -1,0 +1,54 @@
+name: Test OIDC Authentication
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+
+permissions:
+  id-token: write   # Required for OIDC
+  contents: read
+
+jobs:
+  test-auth:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Test Azure CLI Access
+        run: |
+          echo "Testing Azure authentication..."
+          az account show
+          az group list --query "[?name=='${{ vars.AZURE_RESOURCE_GROUP }}']"
+          echo "OIDC authentication successful!"
+
+      - name: Test Container Registry Access
+        run: |
+          echo "Testing Azure Container Registry access..."
+          az acr list --resource-group ${{ vars.AZURE_RESOURCE_GROUP }}
+          echo "Container Registry access confirmed!"
+
+      - name: Test Web Apps Access
+        run: |
+          echo "Testing Azure Web Apps access..."
+          az webapp list --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --query "[].name"
+          echo "Web Apps access confirmed!"
+
+      - name: Display Authentication Context
+        run: |
+          echo "Authentication successful for:"
+          echo "- Client ID: ${{ vars.AZURE_CLIENT_ID }}"
+          echo "- Tenant ID: ${{ vars.AZURE_TENANT_ID }}"
+          echo "- Subscription ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}"
+          echo "- Resource Group: ${{ vars.AZURE_RESOURCE_GROUP }}"
+          echo "- Repository: ${{ github.repository }}"
+          echo "- Ref: ${{ github.ref }}"
+          echo "- Event: ${{ github.event_name }}"

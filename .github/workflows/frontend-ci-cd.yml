@@ -1,0 +1,122 @@
+name: Frontend CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/frontend/**', '.github/workflows/frontend-ci-cd.yml']
+  pull_request:
+    branches: [main]
+    paths: ['src/frontend/**', '.github/workflows/frontend-ci-cd.yml']
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # Required for OIDC authentication
+  contents: read
+  pull-requests: write  # For PR comments
+
+env:
+  REGISTRY: ${{ vars.AZURE_CONTAINER_REGISTRY }}
+  IMAGE_NAME: bookmarks-frontend
+
+jobs:
+  # Build and test the frontend application
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'src/frontend/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: src/frontend
+        run: npm ci
+
+      - name: Run linting
+        working-directory: src/frontend
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: src/frontend
+        run: npm run test -- --coverage --watchAll=false
+
+      - name: Build application
+        working-directory: src/frontend
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: src/frontend/dist/
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-test-results
+          path: |
+            src/frontend/coverage/
+            src/frontend/test-results.xml
+
+  # Build container image (placeholder for Story 010)
+  build-container:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: src/frontend/dist/
+
+      - name: Azure Login using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build container (placeholder)
+        run: |
+          echo "Container build will be implemented in Story 010"
+          echo "Image would be tagged as: $REGISTRY/$IMAGE_NAME:${{ github.sha }}"
+
+  # Security scanning (placeholder for Story 011)
+  security-scan:
+    needs: build-container
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Security scan (placeholder)
+        run: |
+          echo "Security scanning will be implemented in Story 011"
+          echo "Docker Scout vulnerability scanning will be performed here"
+
+  # Deploy to staging/production (placeholder for Story 013)
+  deploy:
+    needs: [build-container, security-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - name: Azure Login using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy (placeholder)
+        run: |
+          echo "Deployment will be implemented in Story 013"
+          echo "Would deploy to Azure Web Apps with zero-downtime slots"
