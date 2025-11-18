@@ -1,0 +1,106 @@
+name: Backend CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/backend/**', '.github/workflows/backend-ci-cd.yml']
+  pull_request:
+    branches: [main]
+    paths: ['src/backend/**', '.github/workflows/backend-ci-cd.yml']
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # Required for OIDC authentication
+  contents: read
+  pull-requests: write  # For PR comments
+
+env:
+  REGISTRY: ${{ vars.AZURE_CONTAINER_REGISTRY }}
+  IMAGE_NAME: bookmarks-backend
+
+jobs:
+  # Build and test the backend application
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements.dev.txt
+
+      - name: Run tests
+        run: |
+          python -m pytest tests/backend/ -v --cov=src/backend --cov-report=xml
+          python -m flake8 src/backend
+          python -m black src/backend --check
+          bandit -r src/backend -c bandit.yaml -v
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-test-results
+          path: |
+            coverage.xml
+            pytest-report.xml
+
+  # Build container image (placeholder for Story 010)
+  build-container:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build container (placeholder)
+        run: |
+          echo "Container build will be implemented in Story 010"
+          echo "Image would be tagged as: $REGISTRY/$IMAGE_NAME:${{ github.sha }}"
+
+  # Security scanning (placeholder for Story 011)
+  security-scan:
+    needs: build-container
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Security scan (placeholder)
+        run: |
+          echo "Security scanning will be implemented in Story 011"
+          echo "Docker Scout vulnerability scanning will be performed here"
+
+  # Deploy to staging/production (placeholder for Story 013)
+  deploy:
+    needs: [build-container, security-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - name: Azure Login using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy (placeholder)
+        run: |
+          echo "Deployment will be implemented in Story 013"
+          echo "Would deploy to Azure Web Apps with zero-downtime slots"
