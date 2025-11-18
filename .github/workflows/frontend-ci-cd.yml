@@ -64,11 +64,14 @@ jobs:
             src/frontend/coverage/
             src/frontend/test-results.xml
 
-  # Build container image (placeholder for Story 010)
+  # Build and push container image
   build-container:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+      image-tag: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -79,6 +82,9 @@ jobs:
           name: frontend-build
           path: src/frontend/dist/
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Azure Login using OIDC
         uses: azure/login@v1
         with:
@@ -86,23 +92,59 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build container (placeholder)
-        run: |
-          echo "Container build will be implemented in Story 010"
-          echo "Image would be tagged as: $REGISTRY/$IMAGE_NAME:${{ github.sha }}"
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-  # Security scanning (placeholder for Story 011)
+      - name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            tjsullivan1/bookmarks-frontend
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.frontend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Security scanning with Docker Scout
   security-scan:
     needs: build-container
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     steps:
-      - name: Security scan (placeholder)
-        run: |
-          echo "Security scanning will be implemented in Story 011"
-          echo "Docker Scout vulnerability scanning will be performed here"
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-  # Deploy to staging/production (placeholder for Story 013)
+      - name: Docker Scout vulnerability scan
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: tjsullivan1/bookmarks-frontend:${{ github.sha }}
+          only-severities: critical,high
+          exit-code: true
+          write-comment: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Deploy to Azure Web Apps
   deploy:
     needs: [build-container, security-scan]
     runs-on: ubuntu-latest
@@ -116,7 +158,116 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy (placeholder)
+      - name: Get Web App details
+        id: webapp
         run: |
-          echo "Deployment will be implemented in Story 013"
-          echo "Would deploy to Azure Web Apps with zero-downtime slots"
+          # Find the frontend web app in the resource group
+          WEBAPP_NAME=$(az webapp list --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --query "[?contains(name, 'frontend')].name" -o tsv | head -1)
+          if [ -z "$WEBAPP_NAME" ]; then
+            echo "No frontend web app found. Using fallback naming."
+            WEBAPP_NAME="${{ vars.AZURE_RESOURCE_GROUP }}-frontend"
+          fi
+          echo "webapp-name=$WEBAPP_NAME" >> $GITHUB_OUTPUT
+          echo "Found Web App: $WEBAPP_NAME"
+
+      - name: Create staging slot
+        run: |
+          # Create staging slot if it doesn't exist
+          az webapp deployment slot create \
+            --name ${{ steps.webapp.outputs.webapp-name }} \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --configuration-source ${{ steps.webapp.outputs.webapp-name }} || echo "Staging slot already exists"
+
+      - name: Deploy to staging slot
+        run: |
+          # Update staging slot with new container image
+          az webapp config container set \
+            --name ${{ steps.webapp.outputs.webapp-name }} \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --docker-custom-image-name "tjsullivan1/bookmarks-frontend:${{ github.sha }}" \
+            --docker-registry-server-url "https://index.docker.io" \
+            --docker-registry-server-user "${{ secrets.DOCKER_USERNAME }}" \
+            --docker-registry-server-password "${{ secrets.DOCKER_PASSWORD }}"
+
+      - name: Warm up staging slot
+        run: |
+          # Get staging slot URL
+          STAGING_URL="https://${{ steps.webapp.outputs.webapp-name }}-staging.azurewebsites.net"
+          echo "Warming up staging slot: $STAGING_URL"
+
+          # Wait for container to start and warm up
+          for i in {1..30}; do
+            if curl -f -s "$STAGING_URL" > /dev/null 2>&1; then
+              echo "Staging slot is healthy after $i attempts"
+              break
+            fi
+            echo "Attempt $i: Staging slot not ready, waiting 10 seconds..."
+            sleep 10
+          done
+
+      - name: Validate staging deployment
+        run: |
+          STAGING_URL="https://${{ steps.webapp.outputs.webapp-name }}-staging.azurewebsites.net"
+
+          # Validate frontend loads
+          RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$STAGING_URL" || echo "000")
+          if [[ "$RESPONSE_CODE" != "200" ]]; then
+            echo "Frontend health check failed on staging slot (HTTP $RESPONSE_CODE)"
+            exit 1
+          fi
+
+          # Check if main content loads
+          CONTENT_CHECK=$(curl -s "$STAGING_URL" | grep -i "bookmarks" || echo "FAIL")
+          if [[ "$CONTENT_CHECK" == "FAIL" ]]; then
+            echo "Frontend content validation failed on staging slot"
+            exit 1
+          fi
+
+          echo "Staging slot validation successful"
+
+      - name: Swap to production
+        run: |
+          # Perform slot swap to production
+          echo "Swapping staging slot to production..."
+          az webapp deployment slot swap \
+            --name ${{ steps.webapp.outputs.webapp-name }} \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --target-slot production
+
+          echo "Deployment completed successfully"
+
+      - name: Validate production deployment
+        run: |
+          PROD_URL="https://${{ steps.webapp.outputs.webapp-name }}.azurewebsites.net"
+
+          # Wait for production to be ready after swap
+          for i in {1..10}; do
+            if curl -f -s "$PROD_URL" > /dev/null 2>&1; then
+              echo "Production deployment validated after $i attempts"
+              break
+            fi
+            echo "Attempt $i: Production not ready, waiting 10 seconds..."
+            sleep 10
+          done
+
+          # Final validation
+          RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$PROD_URL" || echo "000")
+          if [[ "$RESPONSE_CODE" != "200" ]]; then
+            echo "Production deployment validation failed (HTTP $RESPONSE_CODE) - consider rollback"
+            exit 1
+          fi
+
+          echo "Production deployment validation successful"
+
+      - name: Post-deployment cleanup
+        if: success()
+        run: |
+          # Clean up and report success
+          echo "Deployment completed successfully at $(date)"
+          echo "Frontend URL: https://${{ steps.webapp.outputs.webapp-name }}.azurewebsites.net"
+
+          # Optional: Clean up old container images or perform other maintenance
+          echo "Post-deployment tasks completed"
