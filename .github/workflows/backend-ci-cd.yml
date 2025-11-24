@@ -46,7 +46,7 @@ jobs:
           bandit -r src/backend -c bandit.yaml -v
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: backend-test-results
