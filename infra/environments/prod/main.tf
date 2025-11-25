@@ -9,7 +9,7 @@ terraform {
     resource_group_name  = "rg-tjs-tpxs"
     storage_account_name = "satjstpxs"
     container_name       = "tfstate"
-    key                  = "bookmarks/dev/terraform.tfstate"
+    key                  = "bookmarks/prod/terraform.tfstate"
   }
 }
 
