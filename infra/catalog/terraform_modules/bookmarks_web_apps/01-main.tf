@@ -131,8 +131,9 @@ resource "azurerm_linux_web_app" "frontend" {
       docker_registry_url = "https://${azurerm_container_registry.main.login_server}"
     }
 
-    # Health check configuration
-    health_check_path = var.frontend_health_check_path
+    # Health check configuration TODO: Fix this
+    health_check_path                 = var.frontend_health_check_path
+    health_check_eviction_time_in_min = 5
   }
 
   app_settings = {
@@ -142,8 +143,7 @@ resource "azurerm_linux_web_app" "frontend" {
     "ApplicationInsightsAgent_EXTENSION_VERSION" = "~3"
 
     # Container configuration
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.main.login_server}"
-    "DOCKER_ENABLE_CI"                    = "true"
+    # "DOCKER_ENABLE_CI"                    = "true"
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
     "WEBSITES_PORT"                       = "80"
     "WEBSITES_CONTAINER_START_TIME_LIMIT" = var.container_startup_time_limit
@@ -197,7 +197,8 @@ resource "azurerm_linux_web_app" "backend" {
     }
 
     # Health check configuration
-    health_check_path = var.backend_health_check_path
+    health_check_path                 = var.backend_health_check_path
+    health_check_eviction_time_in_min = 5
 
     # CORS configuration for frontend access
     cors {
@@ -213,8 +214,7 @@ resource "azurerm_linux_web_app" "backend" {
     "ApplicationInsightsAgent_EXTENSION_VERSION" = "~3"
 
     # Container configuration
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.main.login_server}"
-    "DOCKER_ENABLE_CI"                    = "true"
+    # "DOCKER_ENABLE_CI"                    = "true"
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
     "WEBSITES_PORT"                       = "8000" # FastAPI default port
     "WEBSITES_CONTAINER_START_TIME_LIMIT" = var.container_startup_time_limit
@@ -337,7 +337,7 @@ resource "azurerm_key_vault" "main" {
   sku_name                   = local.key_vault_config.sku_name
   soft_delete_retention_days = local.key_vault_config.soft_delete_retention_days
   purge_protection_enabled   = local.key_vault_config.purge_protection_enabled
-  enable_rbac_authorization  = local.key_vault_config.enable_rbac_authorization
+  rbac_authorization_enabled = local.key_vault_config.enable_rbac_authorization
 
   enabled_for_deployment          = local.key_vault_config.enabled_for_deployment
   enabled_for_disk_encryption     = local.key_vault_config.enabled_for_disk_encryption
