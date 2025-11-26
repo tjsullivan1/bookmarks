@@ -72,7 +72,7 @@ jobs:
       - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Generate Docker metadata
@@ -116,7 +116,7 @@ jobs:
       - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       # - name: Docker Scout vulnerability scan
@@ -185,7 +185,7 @@ jobs:
             --slot staging \
             --container-image-name "$IMAGE_TAG" \
             --container-registry-url "https://index.docker.io" \
-            --container-registry-user "${{ secrets.DOCKER_USERNAME }}" \
+            --container-registry-user "${{ vars.DOCKER_USERNAME }}" \
             --container-registry-password "${{ secrets.DOCKER_PASSWORD }}"
 
       - name: Warm up staging slot
@@ -324,7 +324,7 @@ jobs:
             --slot staging \
             --container-image-name "$IMAGE_TAG" \
             --container-registry-url "https://index.docker.io" \
-            --container-registry-user "${{ secrets.DOCKER_USERNAME }}" \
+            --container-registry-user "${{ vars.DOCKER_USERNAME }}" \
             --container-registry-password "${{ secrets.DOCKER_PASSWORD }}"
 
       - name: Warm up staging slot
