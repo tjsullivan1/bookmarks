@@ -69,7 +69,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Azure Login using OIDC
+      - name: Azure Login using OIDC for Dev
+        if: startsWith(github.ref, 'refs/heads/feat/')
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Azure Login using OIDC for Prod
+        if: github.ref == 'refs/heads/main'
         uses: azure/login@v1
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
