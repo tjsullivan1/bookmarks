@@ -61,7 +61,7 @@ jobs:
     if: github.event_name != 'pull_request'
     outputs:
       image-digest: ${{ steps.build.outputs.digest }}
-      image-tag: ${{ steps.meta.outputs.tags }}
+      image-tag: ${{ steps.image.outputs.primary-tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -98,6 +98,14 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Capture primary image tag
+        id: image
+        run: |
+          # Get the first tag from the metadata action
+          PRIMARY_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n 1)
+          echo "primary-tag=$PRIMARY_TAG" >> $GITHUB_OUTPUT
+          echo "Primary image tag: $PRIMARY_TAG"
 
   # Security scanning with Docker Scout
   security-scan:
@@ -160,9 +168,16 @@ jobs:
         run: |
           # Update staging slot with new container image
           IMAGE_TAG="${{ needs.build-container.outputs.image-tag }}"
-          # Extract the first tag if multiple tags are present
-          IMAGE_TAG=$(echo "$IMAGE_TAG" | head -1)
           echo "Deploying image: $IMAGE_TAG"
+          
+          # Verify IMAGE_TAG is not empty
+          if [ -z "$IMAGE_TAG" ]; then
+            echo "ERROR: IMAGE_TAG is empty!"
+            echo "Debug - build-container outputs:"
+            echo "  image-tag: ${{ needs.build-container.outputs.image-tag }}"
+            echo "  image-digest: ${{ needs.build-container.outputs.image-digest }}"
+            exit 1
+          fi
           
           az webapp config container set \
             --name ${{ steps.webapp.outputs.webapp-name }} \
@@ -292,9 +307,16 @@ jobs:
         run: |
           # Update staging slot with new container image
           IMAGE_TAG="${{ needs.build-container.outputs.image-tag }}"
-          # Extract the first tag if multiple tags are present
-          IMAGE_TAG=$(echo "$IMAGE_TAG" | head -1)
           echo "Deploying image: $IMAGE_TAG"
+          
+          # Verify IMAGE_TAG is not empty
+          if [ -z "$IMAGE_TAG" ]; then
+            echo "ERROR: IMAGE_TAG is empty!"
+            echo "Debug - build-container outputs:"
+            echo "  image-tag: ${{ needs.build-container.outputs.image-tag }}"
+            echo "  image-digest: ${{ needs.build-container.outputs.image-digest }}"
+            exit 1
+          fi
           
           az webapp config container set \
             --name ${{ steps.webapp.outputs.webapp-name }} \
