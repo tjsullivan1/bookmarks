@@ -168,10 +168,10 @@ jobs:
             --name ${{ steps.webapp.outputs.webapp-name }} \
             --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
             --slot staging \
-            --docker-custom-image-name "$IMAGE_TAG" \
-            --docker-registry-server-url "https://index.docker.io" \
-            --docker-registry-server-user "${{ secrets.DOCKER_USERNAME }}" \
-            --docker-registry-server-password "${{ secrets.DOCKER_PASSWORD }}"
+            --container-image-name "$IMAGE_TAG" \
+            --container-registry-url "https://index.docker.io" \
+            --container-registry-user "${{ secrets.DOCKER_USERNAME }}" \
+            --container-registry-password "${{ secrets.DOCKER_PASSWORD }}"
 
       - name: Warm up staging slot
         run: |
@@ -300,10 +300,10 @@ jobs:
             --name ${{ steps.webapp.outputs.webapp-name }} \
             --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
             --slot staging \
-            --docker-custom-image-name "$IMAGE_TAG" \
-            --docker-registry-server-url "https://index.docker.io" \
-            --docker-registry-server-user "${{ secrets.DOCKER_USERNAME }}" \
-            --docker-registry-server-password "${{ secrets.DOCKER_PASSWORD }}"
+            --container-image-name "$IMAGE_TAG" \
+            --container-registry-url "https://index.docker.io" \
+            --container-registry-user "${{ secrets.DOCKER_USERNAME }}" \
+            --container-registry-password "${{ secrets.DOCKER_PASSWORD }}"
 
       - name: Warm up staging slot
         run: |
