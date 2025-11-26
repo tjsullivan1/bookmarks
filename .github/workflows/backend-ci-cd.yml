@@ -2,7 +2,7 @@ name: Backend CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, "feat/**"]
     paths: ['src/backend/**', '.github/workflows/backend-ci-cd.yml']
   pull_request:
     branches: [main]
@@ -129,10 +129,10 @@ jobs:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
   # Deploy to Azure Web Apps
-  deploy:
+  deploy_dev:
     needs: [build-container, security-scan]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: startsWith(github.ref, 'refs/heads/feat/')
     environment: dev
     steps:
       - name: Azure Login using OIDC
@@ -146,7 +146,134 @@ jobs:
         id: webapp
         run: |
           # Find the backend web app in the resource group
-          WEBAPP_NAME=$(az webapp list --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --query "[?contains(name, 'backend')].name" -o tsv | head -1)
+          WEBAPP_NAME=$(az webapp list --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --query "[?contains(name, '-be-')].name" -o tsv | head -1)
+          if [ -z "$WEBAPP_NAME" ]; then
+            echo "No backend web app found. Using fallback naming."
+            WEBAPP_NAME="${{ vars.AZURE_RESOURCE_GROUP }}-backend"
+          fi
+          echo "webapp-name=$WEBAPP_NAME" >> $GITHUB_OUTPUT
+          echo "Found Web App: $WEBAPP_NAME"
+
+      - name: Create staging slot
+        run: |
+          # Create staging slot if it doesn't exist
+          az webapp deployment slot create \
+            --name ${{ steps.webapp.outputs.webapp-name }} \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --configuration-source ${{ steps.webapp.outputs.webapp-name }} || echo "Staging slot already exists"
+
+      - name: Deploy to staging slot
+        run: |
+          # Update staging slot with new container image
+          az webapp config container set \
+            --name ${{ steps.webapp.outputs.webapp-name }} \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --docker-custom-image-name "tjsullivan1/bookmarks-backend:${{ github.sha }}" \
+            --docker-registry-server-url "https://index.docker.io" \
+            --docker-registry-server-user "${{ secrets.DOCKER_USERNAME }}" \
+            --docker-registry-server-password "${{ secrets.DOCKER_PASSWORD }}"
+
+      - name: Warm up staging slot
+        run: |
+          # Get staging slot URL
+          STAGING_URL="https://${{ steps.webapp.outputs.webapp-name }}-staging.azurewebsites.net"
+          echo "Warming up staging slot: $STAGING_URL"
+
+          # Wait for container to start and warm up
+          for i in {1..30}; do
+            if curl -f -s "$STAGING_URL/health" > /dev/null 2>&1; then
+              echo "Staging slot is healthy after $i attempts"
+              break
+            fi
+            echo "Attempt $i: Staging slot not ready, waiting 10 seconds..."
+            sleep 10
+          done
+
+      - name: Validate staging deployment
+        run: |
+          STAGING_URL="https://${{ steps.webapp.outputs.webapp-name }}-staging.azurewebsites.net"
+
+          # Validate health endpoint
+          HEALTH_RESPONSE=$(curl -f -s "$STAGING_URL/health" || echo "FAIL")
+          if [[ "$HEALTH_RESPONSE" == "FAIL" ]]; then
+            echo "Health check failed on staging slot"
+            exit 1
+          fi
+
+          # Validate API endpoint
+          API_RESPONSE=$(curl -f -s "$STAGING_URL/docs" || echo "FAIL")
+          if [[ "$API_RESPONSE" == "FAIL" ]]; then
+            echo "API docs endpoint failed on staging slot"
+            exit 1
+          fi
+
+          echo "Staging slot validation successful"
+
+      - name: Swap to production
+        run: |
+          # Perform slot swap to production
+          echo "Swapping staging slot to production..."
+          az webapp deployment slot swap \
+            --name ${{ steps.webapp.outputs.webapp-name }} \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --slot staging \
+            --target-slot production
+
+          echo "Deployment completed successfully"
+
+      - name: Validate production deployment
+        run: |
+          PROD_URL="https://${{ steps.webapp.outputs.webapp-name }}.azurewebsites.net"
+
+          # Wait for production to be ready after swap
+          for i in {1..10}; do
+            if curl -f -s "$PROD_URL/health" > /dev/null 2>&1; then
+              echo "Production deployment validated after $i attempts"
+              break
+            fi
+            echo "Attempt $i: Production not ready, waiting 10 seconds..."
+            sleep 10
+          done
+
+          # Final validation
+          if ! curl -f -s "$PROD_URL/health" > /dev/null 2>&1; then
+            echo "Production deployment validation failed - consider rollback"
+            exit 1
+          fi
+
+          echo "Production deployment validation successful"
+
+      - name: Post-deployment cleanup
+        if: success()
+        run: |
+          # Clean up old staging slot deployment
+          echo "Deployment completed successfully at $(date)"
+          echo "Backend URL: https://${{ steps.webapp.outputs.webapp-name }}.azurewebsites.net"
+
+          # Optional: Clean up old container images or perform other maintenance
+          echo "Post-deployment tasks completed"
+
+
+  deploy_prod:
+    needs: [build-container, security-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: prod
+    steps:
+      - name: Azure Login using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get Web App details
+        id: webapp
+        run: |
+          # Find the backend web app in the resource group
+          WEBAPP_NAME=$(az webapp list --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --query "[?contains(name, '-be-')].name" -o tsv | head -1)
           if [ -z "$WEBAPP_NAME" ]; then
             echo "No backend web app found. Using fallback naming."
             WEBAPP_NAME="${{ vars.AZURE_RESOURCE_GROUP }}-backend"
